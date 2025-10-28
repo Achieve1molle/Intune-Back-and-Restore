@@ -1,7 +1,7 @@
 
 # Intune Backup & Restore Script
 
-This PowerShell script provides a comprehensive solution for backing up and restoring Microsoft Intune configurations. It supports both command-line and graphical user interface (WPF) modes, making it accessible for both automation and interactive use.
+This PowerShell script provides a comprehensive solution for backing up and restoring Microsoft Intune configurations. It supports both command-line and graphical user interface (WPF) modes, making it accessible for both automation and interactive use. A simple button click converts the script into a nightly backup job for your Intune environment.
 
 ## Features
     - Backup of Intune entities such as device configurations, compliance policies, scripts, apps, and more.
