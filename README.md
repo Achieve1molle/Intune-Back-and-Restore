@@ -4,41 +4,41 @@
 This PowerShell script provides a comprehensive solution for backing up and restoring Microsoft Intune configurations. It supports both command-line and graphical user interface (WPF) modes, making it accessible for both automation and interactive use.
 
 ## Features
-- Backup Intune configuration items via Microsoft Graph API
-- Restore backed-up configurations
-- WPF UI for interactive usage
-- Console wizard fallback for non-UI environments
-- Supports multiple authentication modes: Browser, Device Code, App (Client Credentials)
-- Timestamped backup folders with retention policy
-- Verbose logging and heartbeat monitoring
+    - Backup of Intune entities such as device configurations, compliance policies, scripts, apps, and more.
+    - Restore functionality with optional dry-run mode.
+    - Secure storage of secrets using DPAPI (LocalMachine scope).
+    - UI interface for ease of use.
+    - Scheduled nightly backup task creation.
+    - OAuth2 client credentials flow validation.
+    - Support for Microsoft Graph v1.0 and beta profiles.
+    - Automatic retention management of backup folders.
 
 ## Prerequisites
-- PowerShell 7 or later
-- Microsoft.Graph PowerShell SDK
-- Appropriate permissions in Azure AD for accessing Intune resources
+ -Entra Permissions for Application Creation
+ - PowerShell 7.x (Core)
+    - Windows Desktop Runtime (for WPF UI support)
+    - Microsoft.Graph PowerShell SDK modules
+        Install via: Install-Module Microsoft.Graph -Scope CurrentUser
+    - Execution Policy: Must allow script execution
+        Recommended: Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+    - Unblock the script if downloaded from the internet:
+        Unblock-File -Path .\Intune-BackupRestore.ps1
+    - Optional: ScheduledTasks module (for task creation)
+        Install via: Install-WindowsFeature RSAT-ScheduledTasks (if not present)
 
 ## Usage
 ### Command-Line
-```powershell
-pwsh -File Intune-BackupRestore.AllInOne.v2.fixed3l_r3e4p.ps1 -Mode Backup -TenantId "<tenant-id>" -AuthMode Browser
-```
+    # Run backup with timestamp folder and retention
+    pwsh -File .\Intune-BackupRestore.v3.3.7k2m.ps1 -Mode Backup -AuthMode App -TenantId "<tenant>" -AppId "<appid>" -ClientSecretPlain "<secret>" -OutputPath "C:\Staging\Backup" -UseTimestampFolder -RetentionCount 10
 
-### UI Mode
-```powershell
-pwsh -File Intune-BackupRestore.AllInOne.v2.fixed3l_r3e4p.ps1 -Mode UI
-```
+    # Run restore with dry-run
+    pwsh -File .\Intune-BackupRestore.v3.3.7k2m.ps1 -Mode Restore -AuthMode App -TenantId "<tenant>" -AppId "<appid>" -ClientSecretPlain "<secret>" -InputPath "C:\Staging\Backup\latest"
 
-## Parameters
-- `Mode`: UI, Backup, Restore, Wizard (default: UI)
-- `AuthMode`: Browser, DeviceCode, App (default: Browser)
-- `TenantId`: Azure AD tenant ID
-- `AppId`: Application (Client) ID for App authentication
-- `ClientSecretPlain`: Client secret for App authentication
-- `CertThumbprint`, `CertPath`, `CertPasswordPlain`: Certificate-based authentication options
-- `UseBeta`, `AutoBeta`, `AutoUpdateGraph`: Graph API profile options
-- `OutputPath`, `InputPath`: Paths for backup and restore
-- `Include`: Specific Intune collections to include
-- `RetentionCount`: Number of backups to retain
+    # Run restore with object creation
+    pwsh -File .\Intune-BackupRestore.v3.3.7k2m.ps1 -Mode Restore -AuthMode App -TenantId "<tenant>" -AppId "<appid>" -ClientSecretPlain "<secret>" -InputPath "C:\Staging\Backup\latest" -ForceRestore
+
+    # Launch UI
+    pwsh -File .\Intune-BackupRestore.v3.3.7k2m.ps1 -Mode UI
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
